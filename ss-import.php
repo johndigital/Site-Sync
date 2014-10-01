@@ -83,6 +83,13 @@
 		 */
 			private function sideLoad($url, $post_id) {
 
+				// If image uploading dependencies have not been added, add them now
+				if ( ! function_exists('download_url') ) {
+					require_once('wp-admin/includes/image.php');
+					require_once('wp-admin/includes/file.php');
+					require_once('wp-admin/includes/media.php');
+				}
+
 				//download image from url
 				$tmp = download_url( $url );
 
