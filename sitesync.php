@@ -69,4 +69,23 @@
 	add_action( 'wp_ajax_funkimporter_init', 'funkimporter_init' );
 	add_action( 'wp_ajax_nopriv_funkimporter_init', 'funkimporter_init' );
 
+
+	// Set ten minute interval for cron
+	function funkexporter_set_interval( $schedules ) {
+		$schedules['ten_minutes'] = array(
+			'interval' => 600,
+			'display' => __('Every ten minutes')
+		);
+		return $schedules;
+	}
+	add_filter( 'cron_schedules', 'funkexporter_set_interval' );
+
+	// If no cron scheduled, schedule it
+	if ( ! wp_next_scheduled( 'funkexporter_cron' ) ) {
+		wp_schedule_event( time(), 'ten_minutes', 'funkexporter_cron' );
+	}
+
+	// Hook import function to cron hook
+	add_action( 'funkexporter_cron', 'funkimporter_init' );
+
 ?>
